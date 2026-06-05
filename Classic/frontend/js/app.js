@@ -1628,9 +1628,13 @@ async function handleLogout() {
 }
 
 async function updateAuthUI() {
-    const {
-        data: { user },
-    } = await supabaseClient.auth.getUser();
+    let user = null;
+    try {
+        const result = await supabaseClient.auth.getUser();
+        user = result.data.user || null;
+    } catch (error) {
+        console.warn("Could not read auth session:", error);
+    }
 
     const previousUserId = currentUser && currentUser.id;
     currentUser = user || null;

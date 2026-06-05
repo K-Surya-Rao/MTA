@@ -260,6 +260,7 @@ button:hover {
     gap: 14px;
     align-items: center;
     min-width: 0;
+    flex: 1 1 auto;
 }
 
 .brand-icon {
@@ -1864,6 +1865,8 @@ textarea {
     justify-self: end;
     margin-left: auto;
     padding-left: 10px;
+    flex: 0 0 auto;
+    min-width: max-content;
 }
 
 .auth-topbar span {
@@ -1883,6 +1886,7 @@ textarea {
     padding: 8px 12px;
     border-radius: 8px;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .auth-topbar {
