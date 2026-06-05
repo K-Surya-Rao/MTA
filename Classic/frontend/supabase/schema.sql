@@ -32,3 +32,35 @@ with check (auth.uid() = user_id);
 
 create index if not exists journal_stores_updated_at_idx
 on public.journal_stores (updated_at desc);
+
+create table if not exists public.profiles (
+    user_id uuid primary key references auth.users(id) on delete cascade,
+    plan text not null default 'trial' check (plan in ('trial', 'paid', 'expired')),
+    trial_started_at timestamptz not null default now(),
+    trial_ends_at timestamptz not null default (now() + interval '14 days'),
+    updated_at timestamptz not null default now()
+);
+
+alter table public.profiles enable row level security;
+
+drop policy if exists "Users can read their own profile" on public.profiles;
+create policy "Users can read their own profile"
+on public.profiles
+for select
+to authenticated
+using (auth.uid() = user_id);
+
+drop policy if exists "Users can insert their own profile" on public.profiles;
+create policy "Users can insert their own profile"
+on public.profiles
+for insert
+to authenticated
+with check (auth.uid() = user_id);
+
+drop policy if exists "Users can update their own profile" on public.profiles;
+create policy "Users can update their own profile"
+on public.profiles
+for update
+to authenticated
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
