@@ -6,6 +6,7 @@ const baseStorageKey = "trading-journal-v1";
 const marketKey = "trading-journal-market";
 const themeKey = "trading-journal-theme";
 const currencyKey = "trading-journal-currency";
+const trialDays = 14;
 const CURRENCIES = {
     INR: { symbol: "\u20B9", locale: "en-IN", code: "INR" },
     USD: { symbol: "$", locale: "en-US", code: "USD" },
@@ -35,6 +36,7 @@ let view = "monthly";
 let selectedMonth = "all";
 let activeMarket = localStorage.getItem(marketKey) || "equity";
 let currentUser = null;
+let accountProfile = null;
 let store = loadStore();
 let remoteSaveTimer = null;
 let remoteSyncInProgress = false;
@@ -425,6 +427,11 @@ function statusFor(entry) {
 }
 
 function openEditor(key) {
+    if (!canEditJournal()) {
+        showTrialLimitMessage();
+        return;
+    }
+
     selectedDate = key;
     const entry = entryFor(key);
     const date = new Date(key + "T12:00:00");
@@ -467,6 +474,12 @@ function closeEditor() {
 function saveSelectedDay(event) {
     event.preventDefault();
     if (!selectedDate) return;
+    if (!canEditJournal()) {
+        showTrialLimitMessage();
+        closeEditor();
+        return;
+    }
+
     const chosenStatus = els.statusInput.value;
     let pnl = Number(els.pnlInput.value || 0);
     if (chosenStatus === "loss") pnl = -Math.abs(pnl);
@@ -519,6 +532,12 @@ function saveSelectedDay(event) {
 
 function clearSelectedDay() {
     if (!selectedDate) return;
+    if (!canEditJournal()) {
+        showTrialLimitMessage();
+        closeEditor();
+        return;
+    }
+
     delete store[selectedDate];
     saveStore();
     closeEditor();
@@ -1507,6 +1526,8 @@ window.addEventListener("resize", adjustMobileTopbar);
 let authMode = "login";
 
 const authEls = {
+    publicLanding: document.getElementById("publicLanding"),
+    app: document.querySelector(".app"),
     modal: document.getElementById("authModal"),
     title: document.getElementById("authTitle"),
     form: document.getElementById("authForm"),
@@ -1517,6 +1538,8 @@ const authEls = {
     forgotPasswordBtn: document.getElementById("forgotPasswordBtn"),
     message: document.getElementById("authMessage"),
     statuses: document.querySelectorAll(".authStatus"),
+    trialStatuses: document.querySelectorAll(".trialStatus"),
+    trialBanner: document.getElementById("trialBanner"),
     openLoginBtns: document.querySelectorAll(".openLoginBtn"),
     openSignupBtns: document.querySelectorAll(".openSignupBtn"),
     logoutBtns: document.querySelectorAll(".logoutBtn"),
@@ -1544,8 +1567,8 @@ authEls.forgotPasswordBtn.addEventListener("click", handlePasswordReset);
 
 function openAuthModal(mode) {
     authMode = mode;
-    authEls.title.textContent = mode === "login" ? "Login" : "Create Account";
-    authEls.submitBtn.textContent = mode === "login" ? "Login" : "Sign Up";
+    authEls.title.textContent = mode === "login" ? "Login" : "Start Free Trial";
+    authEls.submitBtn.textContent = mode === "login" ? "Login" : "Start Free Trial";
     authEls.switchModeBtn.textContent = mode === "login" ? "Create account instead" : "Login instead";
     authEls.forgotPasswordBtn.style.display = mode === "login" ? "inline-block" : "none";
     authEls.message.textContent = "";
@@ -1554,6 +1577,121 @@ function openAuthModal(mode) {
 
 function closeAuthModal() {
     authEls.modal.classList.remove("open");
+}
+
+function trialEndFrom(startDate) {
+    const start = startDate ? new Date(startDate) : new Date();
+    const end = new Date(start);
+    end.setDate(end.getDate() + trialDays);
+    return end.toISOString();
+}
+
+function normalizeProfile(user, profile) {
+    const startedAt = profile && profile.trial_started_at ? profile.trial_started_at : (user.created_at || new Date().toISOString());
+    return {
+        user_id: user.id,
+        plan: profile && profile.plan ? profile.plan : "trial",
+        trial_started_at: startedAt,
+        trial_ends_at: profile && profile.trial_ends_at ? profile.trial_ends_at : trialEndFrom(startedAt),
+        updated_at: new Date().toISOString(),
+    };
+}
+
+async function ensureUserProfile(user) {
+    if (!user) return null;
+
+    const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("user_id, plan, trial_started_at, trial_ends_at, updated_at")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (error) {
+        console.warn("Could not load profile:", error);
+        return null;
+    }
+
+    if (data) return normalizeProfile(user, data);
+
+    const profile = normalizeProfile(user, null);
+    const { data: inserted, error: insertError } = await supabaseClient
+        .from("profiles")
+        .insert(profile)
+        .select("user_id, plan, trial_started_at, trial_ends_at, updated_at")
+        .single();
+
+    if (insertError) {
+        console.warn("Could not create profile:", insertError);
+        return profile;
+    }
+
+    return normalizeProfile(user, inserted);
+}
+
+function getTrialInfo() {
+    if (!currentUser) return { signedIn: false, canEdit: false, label: "" };
+    if (!accountProfile) return { signedIn: true, canEdit: true, label: "Trial active" };
+    if (accountProfile.plan === "paid") return { signedIn: true, canEdit: true, label: "Paid plan" };
+
+    const end = accountProfile.trial_ends_at ? new Date(accountProfile.trial_ends_at) : new Date(trialEndFrom(new Date()));
+    const msLeft = end.getTime() - Date.now();
+    const daysLeft = Math.ceil(msLeft / 86400000);
+
+    if (daysLeft <= 0 || accountProfile.plan === "expired") {
+        return { signedIn: true, canEdit: false, expired: true, label: "Trial expired" };
+    }
+
+    return {
+        signedIn: true,
+        canEdit: true,
+        expired: false,
+        label: daysLeft === 1 ? "1 trial day left" : `${daysLeft} trial days left`,
+    };
+}
+
+function canEditJournal() {
+    return getTrialInfo().canEdit;
+}
+
+function showTrialLimitMessage() {
+    const message = "Your free trial has ended. You can still view and export your journal. Upgrade will be connected next.";
+    if (authEls.trialBanner) {
+        authEls.trialBanner.textContent = message;
+        authEls.trialBanner.classList.add("show", "expired");
+    }
+}
+
+function updateTrialUI() {
+    const info = getTrialInfo();
+    authEls.trialStatuses.forEach(status => {
+        status.textContent = info.label || "";
+        status.style.display = info.label ? "inline-block" : "none";
+    });
+
+    if (!authEls.trialBanner) return;
+
+    if (!info.signedIn) {
+        authEls.trialBanner.textContent = "";
+        authEls.trialBanner.classList.remove("show", "expired");
+        return;
+    }
+
+    if (info.expired) {
+        authEls.trialBanner.textContent = "Trial expired. You can view and export your data. Upgrade payment will be connected next.";
+        authEls.trialBanner.classList.add("show", "expired");
+        return;
+    }
+
+    if (accountProfile && accountProfile.plan === "paid") {
+        authEls.trialBanner.textContent = "Paid plan active.";
+        authEls.trialBanner.classList.add("show");
+        authEls.trialBanner.classList.remove("expired");
+        return;
+    }
+
+    authEls.trialBanner.textContent = `${info.label}. Full access is enabled during your free trial.`;
+    authEls.trialBanner.classList.add("show");
+    authEls.trialBanner.classList.remove("expired");
 }
 
 async function handleAuthSubmit(event) {
@@ -1622,6 +1760,7 @@ function authErrorMessage(message) {
 async function handleLogout() {
     await supabaseClient.auth.signOut();
     currentUser = null;
+    accountProfile = null;
     store = loadStore();
     render();
     await updateAuthUI();
@@ -1638,6 +1777,9 @@ async function updateAuthUI() {
 
     const previousUserId = currentUser && currentUser.id;
     currentUser = user || null;
+    accountProfile = user ? await ensureUserProfile(user) : null;
+
+    document.body.classList.toggle("signed-in", !!user);
 
     authEls.statuses.forEach(status => {
         status.textContent = user ? user.email : "Not signed in";
@@ -1655,6 +1797,9 @@ async function updateAuthUI() {
     authEls.logoutBtns.forEach(button => {
         button.style.display = user ? "inline-block" : "none";
     });
+
+    updateTrialUI();
+    adjustMobileTopbar();
 
     if (user && user.id !== previousUserId) {
         await syncRemoteStore();

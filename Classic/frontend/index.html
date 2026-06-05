@@ -15,6 +15,96 @@
 
 <body>
 
+  <section class="public-shell" id="publicLanding">
+    <header class="public-nav">
+      <div class="public-brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="14" width="6" height="12" rx="1" fill="#C53030" />
+            <line x1="7" y1="10" x2="7" y2="14" stroke="#C53030" stroke-width="1.5" stroke-linecap="round" />
+            <line x1="7" y1="26" x2="7" y2="29" stroke="#C53030" stroke-width="1.5" stroke-linecap="round" />
+            <rect x="13" y="9" width="6" height="16" rx="1" fill="#27500A" />
+            <line x1="16" y1="5" x2="16" y2="9" stroke="#27500A" stroke-width="1.5" stroke-linecap="round" />
+            <line x1="16" y1="25" x2="16" y2="28" stroke="#27500A" stroke-width="1.5" stroke-linecap="round" />
+            <rect x="22" y="4" width="6" height="20" rx="1" fill="#173404" />
+            <line x1="25" y1="1" x2="25" y2="4" stroke="#173404" stroke-width="1.5" stroke-linecap="round" />
+            <line x1="25" y1="24" x2="25" y2="27" stroke="#173404" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </div>
+        <strong>My Trade Audit</strong>
+      </div>
+      <div class="public-actions">
+        <button class="openLoginBtn" type="button">Login</button>
+        <button class="openSignupBtn primary-action" type="button">Start Free Trial</button>
+      </div>
+    </header>
+
+    <main class="public-hero">
+      <section class="hero-copy">
+        <span class="trial-pill">14-day free trial &middot; No credit card required</span>
+        <h1>Trade better by auditing the trader, not just the trade.</h1>
+        <p>Track P&amp;L, discipline, emotions, mistakes, risk, and setup quality in one private trading journal built for daily review.</p>
+        <div class="hero-actions">
+          <button class="openSignupBtn primary-action" type="button">Start Free Trial</button>
+          <button class="openLoginBtn" type="button">Login</button>
+        </div>
+        <div class="trust-row">
+          <span>Cloud sync</span>
+          <span>Private journal</span>
+          <span>Export anytime</span>
+        </div>
+      </section>
+
+      <section class="hero-panel" aria-label="Product preview">
+        <div class="preview-card">
+          <span>Today</span>
+          <strong class="profit-text">+&#8377;12,400</strong>
+          <small>3 trades &middot; 2 wins &middot; calm</small>
+        </div>
+        <div class="preview-card">
+          <span>Discipline</span>
+          <strong>84/100</strong>
+          <small>Risk followed, no revenge trades</small>
+        </div>
+        <div class="preview-card">
+          <span>Pattern</span>
+          <strong class="loss-text">Chasing entries</strong>
+          <small>Repeated twice this week</small>
+        </div>
+      </section>
+    </main>
+
+    <section class="public-grid">
+      <article>
+        <h2>What it tracks</h2>
+        <p>Daily P&amp;L, trades, win rate, risk %, setup grade, emotions, mistakes, notes, and capital growth.</p>
+      </article>
+      <article>
+        <h2>Why it helps</h2>
+        <p>Your dashboard shows what is working, what is costing money, and which behaviors need attention.</p>
+      </article>
+      <article>
+        <h2>Free trial</h2>
+        <p>Full access for 14 days. After trial, view and export your data, then upgrade to continue journaling.</p>
+      </article>
+    </section>
+
+    <section class="quote-row" aria-label="Trading mindset quotes">
+      <blockquote>
+        <p>"Never risk permanent loss of capital."</p>
+        <cite>Warren Buffett</cite>
+      </blockquote>
+      <blockquote>
+        <p>"Focus on protecting what you have."</p>
+        <cite>Paul Tudor Jones</cite>
+      </blockquote>
+      <blockquote>
+        <p>"Discipline is a trading edge."</p>
+        <cite>Trading psychology principle</cite>
+      </blockquote>
+    </section>
+  </section>
+
   <main class="app">
     <div class="mobile-brand" aria-hidden="true">
       <div class="brand-icon" aria-hidden="true">
@@ -34,6 +124,7 @@
       <p>Trading journal for tracking performance, risk, and growth.</p>
       <div class="auth-actions">
         <span class="authStatus">Not signed in</span>
+        <span class="trialStatus"></span>
         <button class="openLoginBtn" type="button">Login</button>
         <button class="openSignupBtn" type="button">Sign Up</button>
         <button class="logoutBtn" type="button" style="display:none;">Logout</button>
@@ -67,11 +158,14 @@
 
         <div class="auth-topbar">
           <span class="authStatus">Not signed in</span>
+          <span class="trialStatus"></span>
           <button class="openLoginBtn" type="button">Login</button>
           <button class="openSignupBtn" type="button">Sign Up</button>
           <button class="logoutBtn" type="button" style="display:none;">Logout</button>
         </div>
       </div>
+
+      <div class="trial-banner" id="trialBanner"></div>
 
       <div class="metrics-row">
         <div class="metric"><span id="pnlMetricLabel">Yearly P&amp;L</span><strong id="mPnl">0</strong></div>
