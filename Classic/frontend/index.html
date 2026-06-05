@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+  <link rel="stylesheet" href="./css/styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Trade Audit - Trading Journal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+
+</head>
+
+
+<body>
+
+  <main class="app">
+    <div class="mobile-brand" aria-hidden="true">
+      <div class="brand-icon" aria-hidden="true">
+        <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="14" width="6" height="12" rx="1" fill="#C53030" />
+          <line x1="7" y1="10" x2="7" y2="14" stroke="#C53030" stroke-width="1.5" stroke-linecap="round" />
+          <line x1="7" y1="26" x2="7" y2="29" stroke="#C53030" stroke-width="1.5" stroke-linecap="round" />
+          <rect x="13" y="9" width="6" height="16" rx="1" fill="#27500A" />
+          <line x1="16" y1="5" x2="16" y2="9" stroke="#27500A" stroke-width="1.5" stroke-linecap="round" />
+          <line x1="16" y1="25" x2="16" y2="28" stroke="#27500A" stroke-width="1.5" stroke-linecap="round" />
+          <rect x="22" y="4" width="6" height="20" rx="1" fill="#173404" />
+          <line x1="25" y1="1" x2="25" y2="4" stroke="#173404" stroke-width="1.5" stroke-linecap="round" />
+          <line x1="25" y1="24" x2="25" y2="27" stroke="#173404" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </div>
+      <h1>My Trade Audit <span class="mobileTitleYear"></span></h1>
+      <p>Trading journal for tracking performance, risk, and growth.</p>
+      <div class="auth-actions">
+        <span class="authStatus">Not signed in</span>
+        <button class="openLoginBtn" type="button">Login</button>
+        <button class="openSignupBtn" type="button">Sign Up</button>
+        <button class="logoutBtn" type="button" style="display:none;">Logout</button>
+      </div>
+
+    </div>
+
+    <header class="topbar">
+      <div class="topbar-main">
+        <section class="brand" aria-label="Journal title">
+          <div class="brand-icon" aria-hidden="true">
+
+            <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="14" width="6" height="12" rx="1" fill="#C53030" />
+              <line x1="7" y1="10" x2="7" y2="14" stroke="#C53030" stroke-width="1.5" stroke-linecap="round" />
+              <line x1="7" y1="26" x2="7" y2="29" stroke="#C53030" stroke-width="1.5" stroke-linecap="round" />
+              <rect x="13" y="9" width="6" height="16" rx="1" fill="#27500A" />
+              <line x1="16" y1="5" x2="16" y2="9" stroke="#27500A" stroke-width="1.5" stroke-linecap="round" />
+              <line x1="16" y1="25" x2="16" y2="28" stroke="#27500A" stroke-width="1.5" stroke-linecap="round" />
+              <rect x="22" y="4" width="6" height="20" rx="1" fill="#173404" />
+              <line x1="25" y1="1" x2="25" y2="4" stroke="#173404" stroke-width="1.5" stroke-linecap="round" />
+              <line x1="25" y1="24" x2="25" y2="27" stroke="#173404" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </div>
+
+          <div>
+            <h1>My Trade Audit <span id="titleYear"></span></h1>
+            <p>Trading journal for tracking performance, risk, and growth.</p>
+          </div>
+        </section>
+
+        <div class="auth-topbar">
+          <span class="authStatus">Not signed in</span>
+          <button class="openLoginBtn" type="button">Login</button>
+          <button class="openSignupBtn" type="button">Sign Up</button>
+          <button class="logoutBtn" type="button" style="display:none;">Logout</button>
+        </div>
+      </div>
+
+      <div class="metrics-row">
+        <div class="metric"><span id="pnlMetricLabel">Yearly P&amp;L</span><strong id="mPnl">0</strong></div>
+        <div class="metric"><span>Total Trades</span><strong id="mTrades">0</strong></div>
+        <div class="metric"><span>Win Rate</span><strong id="mWinRate">0%</strong></div>
+        <div class="metric"><span>Best Day</span><strong id="mBest">0</strong></div>
+        <div class="metric"><span>Worst Day</span><strong id="mWorst">0</strong></div>
+        <div class="metric"><span>Profit Factor</span><strong id="mProfitFactor">0.00</strong></div>
+        <div class="metric"><span>Expectancy</span><strong id="mExpectancy">0</strong></div>
+        <div class="metric"><span>Discipline Score</span><strong id="mDisciplineScore">-</strong></div>
+      </div>
+    </header>
+
+    <section class="shell">
+      <div class="controls">
+        <div class="year-control">
+          <button class="icon-btn" id="prevYear" title="Previous year" aria-label="Previous year">&#9664;</button>
+          <div class="year-label" id="yearLabel">2026</div>
+          <button class="icon-btn" id="nextYear" title="Next year" aria-label="Next year">&#9654;</button>
+          <button class="this-year" id="thisYear">This Year</button>
+          <select id="monthFilter" aria-label="Month filter">
+            <option value="all">All Months</option>
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+          </select>
+          <select id="themeSelect" aria-label="Color theme">
+            <option value="default">Dark Mode</option>
+            <option value="light">Light Mode</option>
+          </select>
+          <select id="colorSelect" aria-label="Color accent">
+            <option value="">Teal (Default)</option>
+            <option value="emerald">Emerald</option>
+            <option value="sapphire">Sapphire</option>
+            <option value="violet">Violet</option>
+            <option value="graphite">Graphite</option>
+            <option value="gold">Gold</option>
+          </select>
+          <select id="currencySelect" aria-label="Currency">
+            <option value="INR">INR (&#8377;)</option>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (&#8364;)</option>
+            <option value="GBP">GBP (&#163;)</option>
+            <option value="JPY">JPY (&#165;)</option>
+            <option value="CAD">CAD (CA$)</option>
+            <option value="AUD">AUD (A$)</option>
+            <option value="CHF">CHF (Fr)</option>
+            <option value="SGD">SGD (S$)</option>
+            <option value="HKD">HKD (HK$)</option>
+            <option value="AED">AED</option>
+            <option value="CNY">CNY (&#165;)</option>
+          </select>
+          <select id="marketSelect" aria-label="Market type">
+            <option value="equity">Equity</option>
+            <option value="fno">F&amp;O</option>
+            <option value="commodity">Commodity</option>
+            <option value="forex">Forex</option>
+
+          </select>
+
+        </div>
+        <div class="legend-row" aria-label="Status legend">
+          <span><i class="dot" style="background: var(--profit)"></i>Profit</span>
+          <span><i class="dot" style="background: var(--loss)"></i>Loss</span>
+          <span><i class="dot" style="background: var(--breakeven)"></i>Breakeven</span>
+          <span><i class="dot" style="background: var(--none)"></i>No Trade</span>
+        </div>
+        <div class="controls-right">
+          <div class="segmented">
+            <button id="monthlyBtn" class="active">Monthly View</button>
+            <button id="yearlyBtn">Yearly View</button>
+          </div>
+
+
+        </div>
+      </div>
+
+      <div class="content">
+        <section>
+          <div class="months" id="months"></div>
+          <div class="wide-year" id="yearView"></div>
+          <div class="single-month-strip" id="singleMonthStrip">
+            <div class="strip-card">
+              <span>Starting Capital</span>
+              <input id="stripCapitalInput" type="number" min="0" step="1000" placeholder="Example: 100000">
+            </div>
+            <div class="strip-card"><span>Monthly P&amp;L</span><strong id="stripPnl">0</strong></div>
+            <div class="strip-card"><span>Total Trades</span><strong id="stripTrades">0</strong></div>
+            <div class="strip-card"><span>Win Rate</span><strong id="stripWinRate">0%</strong></div>
+            <div class="strip-card"><span>Winning Days</span><strong id="stripWinDays">0</strong></div>
+            <div class="strip-card"><span>Losing Days</span><strong id="stripLossDays">0</strong></div>
+            <div class="strip-card"><span>Best Day</span><strong id="stripBest">0</strong></div>
+            <div class="strip-card"><span>Worst Day</span><strong id="stripWorst">0</strong></div>
+            <div class="strip-card"><span>Avg Profit/Trade</span><strong id="stripAvgProfit">0</strong></div>
+            <div class="strip-card"><span>Day Profit Factor</span><strong id="stripPF">0.00</strong></div>
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <section class="side-card">
+            <h2>Investment Capital</h2>
+            <div class="capital-box">
+              <label>Starting Capital
+                <input id="capitalInput" type="number" min="0" step="1000" placeholder="Example: 100000">
+              </label>
+              <div id="capitalSummary"></div>
+            </div>
+          </section>
+
+          <section class="side-card">
+            <h2 id="summaryTitle">Yearly Summary</h2>
+            <div id="summary"></div>
+            <div class="import-export">
+              <button id="exportBtn">Export Data</button>
+              <button id="importBtn">Import Data</button>
+              <input type="file" id="importFile" accept="application/json" hidden>
+            </div>
+            <div id="backupReminder"></div>
+          </section>
+
+          <section class="side-card">
+            <h2>Monthly P&amp;L</h2>
+            <div id="monthlyBars"></div>
+          </section>
+
+          <section class="side-card">
+            <h2>Legend</h2>
+            <div class="legend-grid">
+              <span><i class="dot" style="background: var(--profit)"></i>Profit</span>
+              <span><i class="dot" style="background: var(--loss)"></i>Loss</span>
+              <span><i class="dot" style="background: var(--breakeven)"></i>Breakeven</span>
+              <span><i class="dot" style="background: var(--none)"></i>No Trade</span>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <div class="year-toolbar hidden" id="yearToolbar">
+        <div class="ytb-card ytb-capital">
+          <span>Starting Capital</span>
+          <input id="ytbCapitalInput" type="number" min="0" step="1000" placeholder="Example: 100000">
+        </div>
+        <div class="ytb-card"><span>Yearly P&amp;L</span><strong id="ytbPnl">0</strong></div>
+        <div class="ytb-card"><span>Win Rate</span><strong id="ytbWinRate">0%</strong></div>
+        <div class="ytb-card"><span>Best Day</span><strong id="ytbBest">0</strong></div>
+        <div class="ytb-card"><span>Worst Day</span><strong id="ytbWorst">0</strong></div>
+        <div class="ytb-card"><span>Profit Factor</span><strong id="ytbPF">0.00</strong></div>
+        <div class="ytb-card ytb-bars">
+          <span>Monthly P&amp;L</span>
+          <div class="ytb-bars-grid" id="ytbBarsGrid"></div>
+        </div>
+        <div class="ytb-card ytb-actions">
+          <button id="ytbExportBtn">Export</button>
+          <button id="ytbImportBtn">Import</button>
+          <input type="file" id="ytbImportFile" accept="application/json" hidden>
+        </div>
+        <div id="ytbBackupReminder"></div>
+      </div>
+
+      <div class="dashboard-grid">
+        <section class="dash-card dash-overview">
+          <h2>Performance Overview</h2>
+          <div class="overview-grid" id="overview"></div>
+        </section>
+        <section class="dash-card dash-equity">
+          <h2>Equity Curve (Year)</h2>
+          <canvas class="chart" id="equityChart" width="640" height="140"></canvas>
+        </section>
+        <section class="dash-card dash-bestworst">
+          <h2>Best / Worst Days</h2>
+          <div class="bestworst" id="bestWorst"></div>
+        </section>
+        <section class="dash-card dash-streak">
+          <h2>Trading Streak</h2>
+          <div id="streakWidget"></div>
+        </section>
+        <section class="dash-card dash-weekly">
+          <h2>Weekly Audit</h2>
+          <div id="weeklyAudit"></div>
+        </section>
+        <section class="dash-card dash-discipline">
+          <h2>Discipline Score</h2>
+          <div id="disciplineWidget">
+            <div class="score-empty">Log trades to see your discipline score.</div>
+          </div>
+        </section>
+        <section class="dash-card dash-setup">
+          <h2>Setup Analytics</h2>
+          <div id="setupAnalytics"></div>
+        </section>
+        <section class="dash-card dash-coaching">
+          <h2>Coaching Insights</h2>
+          <div id="coachingInsights"></div>
+        </section>
+        <section class="dash-card dash-mvm">
+          <h2>Mind vs Money</h2>
+          <div id="psychInsights"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+    <form class="editor" id="editor">
+      <div class="editor-head">
+        <h2 id="editorTitle">Edit Day</h2>
+        <button type="button" class="icon-btn" id="closeModal" aria-label="Close editor">&#10005;</button>
+      </div>
+      <div class="editor-mode-tabs">
+        <button type="button" id="modeQuick" class="active">Quick Entry</button>
+        <button type="button" id="modeAdvanced">Full Details</button>
+      </div>
+      <div class="form-grid">
+        <label>Status
+          <select id="statusInput">
+            <option value="none">No Trade</option>
+            <option value="profit">Profit</option>
+            <option value="loss">Loss</option>
+            <option value="breakeven">Breakeven</option>
+          </select>
+        </label>
+        <label>P&amp;L
+          <input id="pnlInput" type="number" step="0.01" placeholder="Example: 450">
+        </label>
+        <label>Trades
+          <input id="quickTradesInput" type="number" min="0" step="1" placeholder="Example: 5">
+        </label>
+        <label>Winning Trades
+          <input id="quickWinsInput" type="number" min="0" step="1" placeholder="Example: 3">
+        </label>
+        <label class="checkin-box">
+          <input id="checkedInInput" type="checkbox">
+          Daily check-in complete
+        </label>
+
+        <span class="form-section-label" id="quickEmotionLabel">Today's Emotion</span>
+        <div class="chip-group" id="quickEmotionChips">
+          <label><input type="radio" name="quickEmotion" value="disciplined"> Disciplined</label>
+          <label><input type="radio" name="quickEmotion" value="calm"> Calm</label>
+          <label><input type="radio" name="quickEmotion" value="confident"> Confident</label>
+          <label><input type="radio" name="quickEmotion" value="fomo"> FOMO</label>
+          <label><input type="radio" name="quickEmotion" value="revenge"> Revenge</label>
+          <label><input type="radio" name="quickEmotion" value="greedy"> Greedy</label>
+          <label><input type="radio" name="quickEmotion" value="fearful"> Fearful</label>
+          <label><input type="radio" name="quickEmotion" value="bored"> Bored</label>
+          <label><input type="radio" name="quickEmotion" value="frustrated"> Frustrated</label>
+          <label><input type="radio" name="quickEmotion" value="distracted"> Distracted</label>
+        </div>
+
+        <div class="advanced-fields" id="advancedFields">
+          <label>Trades
+            <input id="tradesInput" type="number" min="0" step="1" placeholder="Example: 5">
+          </label>
+          <label>Winning Trades
+            <input id="winsInput" type="number" min="0" step="1" placeholder="Example: 3">
+          </label>
+          <div class="risk-row">
+            <label>Risk % of Capital
+              <input id="riskPctInput" type="number" step="0.1" min="0" placeholder="Example: 1.5">
+            </label>
+            <label>Setup Quality
+              <select id="setupInput">
+                <option value="">Select</option>
+                <option value="A+">A+ Best</option>
+                <option value="A">A Good</option>
+                <option value="B">B Average</option>
+                <option value="C">C Poor</option>
+              </select>
+            </label>
+          </div>
+
+          <span class="form-section-label">Emotions</span>
+          <div class="chip-group" id="emotionChips">
+            <label><input type="checkbox" value="calm"> Calm</label>
+            <label><input type="checkbox" value="confident"> Confident</label>
+            <label><input type="checkbox" value="fomo"> FOMO</label>
+            <label><input type="checkbox" value="revenge"> Revenge</label>
+            <label><input type="checkbox" value="greedy"> Greedy</label>
+            <label><input type="checkbox" value="fearful"> Fearful</label>
+            <label><input type="checkbox" value="bored"> Bored</label>
+            <label><input type="checkbox" value="frustrated"> Frustrated</label>
+            <label><input type="checkbox" value="distracted"> Distracted</label>
+            <label><input type="checkbox" value="disciplined"> Disciplined</label>
+          </div>
+
+          <span class="form-section-label">Mistakes</span>
+          <div class="chip-group" id="mistakeChips">
+            <label><input type="checkbox" value="overtrading"> Overtrading</label>
+            <label><input type="checkbox" value="no-stoploss"> No Stop Loss</label>
+            <label><input type="checkbox" value="moved-sl"> Moved Stop Loss</label>
+            <label><input type="checkbox" value="oversized"> Oversized Position</label>
+            <label><input type="checkbox" value="early-exit"> Exited Too Early</label>
+            <label><input type="checkbox" value="chased"> Chased Entry</label>
+            <label><input type="checkbox" value="no-plan"> No Trade Plan</label>
+            <label><input type="checkbox" value="revenge-trade"> Revenge Trade</label>
+          </div>
+          <textarea id="notesInput" placeholder="Notes, mistakes, market condition, setup quality..."></textarea>
+        </div>
+      </div>
+      <div class="editor-actions">
+        <button type="button" class="danger" id="clearDay">Clear Day</button>
+        <button class="primary" type="submit" style="flex:1">Save</button>
+      </div>
+    </form>
+  </div>
+  <div class="modal" id="authModal" role="dialog" aria-modal="true">
+    <form class="editor" id="authForm">
+      <div class="editor-head">
+        <h2 id="authTitle">Login</h2>
+        <button type="button" class="icon-btn" id="closeAuthModal">&#10005;</button>
+      </div>
+
+      <div class="form-grid">
+        <label>Email
+          <input id="authEmail" type="email" placeholder="you@example.com" required>
+        </label>
+
+        <label>Password
+          <input id="authPassword" type="password" placeholder="Minimum 6 characters" required>
+        </label>
+      </div>
+
+      <div class="editor-actions">
+        <button type="submit" class="primary" id="authSubmitBtn">Login</button>
+      </div>
+
+      <div class="auth-helper-actions">
+        <button type="button" id="authSwitchModeBtn">Create account instead</button>
+        <button type="button" id="forgotPasswordBtn">Forgot password?</button>
+      </div>
+
+      <p id="authMessage" style="margin-top:12px;color:var(--muted);"></p>
+    </form>
+  </div>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/supabaseClient.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+
+
+
+</html>
